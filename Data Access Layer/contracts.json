@@ -134,22 +134,5 @@
     "finished": false,
     "accepted": false,
     "reviewed": false
-  },
-  {
-    "contract_id": 9,
-    "clientName": "Peiter",
-    "clientSurname": "Park",
-    "clientEmail": "glanningerxander@gmail.com",
-    "clientPhone": "0793370613",
-    "typeofjob": "Repair",
-    "contracttype": "Maintenance",
-    "timePeriod": "12",
-    "startDate": "2024-10-29",
-    "contractname": "Playstation Fix",
-    "location": "Pretoria North",
-    "assigned": "none",
-    "finished": false,
-    "accepted": false,
-    "reviewed": false
   }
 ]
