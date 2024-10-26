@@ -216,6 +216,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 18vh;
 }
 
 .contract-details-main-container h3 {

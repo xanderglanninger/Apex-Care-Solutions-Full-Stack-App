@@ -75,7 +75,7 @@ body {
 }
 
 .upcomming-secondary-container {
-  height: 17vh;
+  height: 24vh;
   overflow-y: scroll;
   scrollbar-width: none;
 }

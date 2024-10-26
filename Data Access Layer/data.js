@@ -17,15 +17,6 @@ const ReadFile = async (filename) => {
   }
 };
 
-/*const DeleteContent = async (filename) => {
-  fs.truncate(path.join(__dirname, `${filename}.json`), 0, (err) => {
-    if (err) {
-      console.error("Error writing data file:", err);
-      return res.status(500).json({ success: false, message: "Error writing data file." });
-    }
-  });
-};*/
-
 async function textGenTextOnlyPrompt() {
   // Await the results of ReadFile
   const technicians = await ReadFile("technicianinfo");
@@ -46,7 +37,12 @@ async function textGenTextOnlyPrompt() {
     technicians
   )} and contracts: ${JSON.stringify(
     contracts
-  )}. Based on this exact data, assign the best technician to each contract considering the skills, availability, and any other information provided. The same person can't be scheduled twice. Return only the final result in the following JSON format:
+  )}. Using the provided data, assign the most suitable technician to each contract, ensuring the following rules are strictly adhered to:
+
+    1. Job Duration: Each job requires exactly one full day.
+    2. Daily Limit: Assign each technician only once per day; no technician should have more than one job per calendar day. Don't assign the same technician to 2 or more jobs on the same startDate
+    3. Location Availability: Schedule technicians only in locations where they are available.
+  Return the final result strictly in the specified JSON format below, containing only the assignment output:
 
   [
     {
@@ -86,7 +82,7 @@ const sendMail = (email) => {
     service: "gmail",
     auth: {
       user: "senproject384@gmail.com",
-      pass: "zbyz hqxs tutb iwpu",
+      pass: "ysqs tnlg swjk pjkg",
     },
   });
 
@@ -94,7 +90,7 @@ const sendMail = (email) => {
     from: "senproject384@gmail.com",
     to: `${email}`,
     subject: "Apexcare || Thank you!",
-    text: `Thank you for using our services.\n\nPlease use the following link to leave a review or raise a ticket:\nhttps://apexcaresolutionsfullstackapp1-xxn0mxim.b4a.run/review?email=${encodeURIComponent(
+    text: `Thank you for using our services.\n\nPlease use the following link to leave a review or raise a ticket:\nhttp://localhost:5000/review?email=${encodeURIComponent(
       email
     )}`,
   };

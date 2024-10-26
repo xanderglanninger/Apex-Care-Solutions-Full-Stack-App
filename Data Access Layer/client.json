@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "name": "Xander",
+    "surname": "Glanninger",
+    "email": "glanningerxander@gmail.com",
+    "phone": "0793370613",
+    "location": "Montana"
+  },
+  {
+    "name": "Peiter",
+    "surname": "Glanninger",
+    "email": "glanningerxander@gmail.com",
+    "phone": "0793370613",
+    "location": "Montana"
+  }
+]

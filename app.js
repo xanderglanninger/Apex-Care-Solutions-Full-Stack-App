@@ -12,8 +12,6 @@ app.use(express.json());
 //Global synchronization
 //==========================================================================================
 
-const LoginClient = "Xander Glanninger"; //This will be used when a technician logs in and used to filted only the contracts assigned to that technician
-
 const tempDashboard = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "dashboard.html"), "utf-8");
 const templogin = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "login.html"), "utf-8");
 const tempAssign = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "assign.html"), "utf-8");
@@ -191,19 +189,41 @@ app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const usersData = await fs.promises.readFile(path.join(__dirname, "Data Access Layer", "users.json"), "utf-8");
+    // Log the received username for debugging
+    console.log(`Login attempt with username: ${username}`);
+
+    // Correctly determine if it's an employee
+    const isEmployee = username.toLowerCase().includes("employee");
+
+    // Select the appropriate JSON file based on the type
+    const fileName = isEmployee ? "users.json" : "technicianinfo.json";
+    const filePath = path.join(__dirname, "Data Access Layer", fileName);
+
+    const usersData = await fs.promises.readFile(filePath, "utf-8");
     const users = JSON.parse(usersData);
 
-    // Find user
-    const user = users.find((u) => u.username === username && u.password === password);
+    // Match the user based on the type
+    const user = isEmployee
+      ? users.find((u) => u.username === username && u.password === password)
+      : users.find((u) => `${u.name} ${u.surname}` === username && u.password === password);
+
+    // Log the identified user type for debugging
+    console.log(`User type: ${isEmployee ? "Employee" : "Technician"}`);
+
     if (user) {
-      // Redirect to dashboard if successful
-      return res.status(200).json({ success: true, redirectUrl: "/dashboard" });
+      const redirectUrl = isEmployee ? "/dashboard" : "/technicianmobile";
+      console.log(`Redirecting to: ${redirectUrl}`); // Debugging
+
+      return res.status(200).json({
+        success: true,
+        redirectUrl,
+        isEmployee,
+      });
     } else {
       return res.status(401).json({ success: false, message: "Invalid username or password." });
     }
   } catch (error) {
-    console.error("Error reading users data:", error);
+    console.error("Error reading user data:", error);
     res.status(500).send("Error processing login.");
   }
 });
@@ -429,6 +449,8 @@ const replaceContractTemplate = (temp, contract) => {
   result = result.replace(/{%USERLOCATION%}/g, contract.location);
   result = result.replace(/{%JOBTYPE%}/g, contract.typeofjob);
   result = result.replace(/{%CONTRACTTYPE%}/g, contract.contracttype);
+  result = result.replace(/{%STARTDATE%}/g, contract.startDate);
+  result = result.replace(/{%TIMEPERIOD%}/g, contract.timePeriod);
 
   if (contract.contracttype === "Maintenance") {
     result = result.replace(/{%ONCEOFF%}/g, "maintenance-main-container");
@@ -463,16 +485,18 @@ const replaceTechDashboardTemplate = (temp, assigned) => {
 //================================================================================================================================
 //Mobile Technician Page Setup
 app.get("/technicianmobile", async (req, res) => {
-  const { username, password } = req.query;
+  const { username } = req.query;
+
+  if (!username) {
+    return res.status(400).send("Username is required.");
+  }
 
   try {
     const contractsPath = path.join(__dirname, "Data Access Layer", "contracts.json");
     const contractsData = await fs.promises.readFile(contractsPath, "utf-8");
-
-    let dataObj = JSON.parse(contractsData);
+    const dataObj = JSON.parse(contractsData);
 
     const filteredData = dataObj.filter((el) => el.assigned === username);
-
     const upcomingContracts = filteredData.filter((el) => !el.accepted);
     const scheduledContracts = filteredData.filter((el) => el.accepted);
 
@@ -489,7 +513,7 @@ app.get("/technicianmobile", async (req, res) => {
 
     res.send(finalOutput);
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error retrieving contracts:", error);
     res.status(500).send("Error retrieving contracts.");
   }
 });
@@ -512,6 +536,7 @@ app.post("/update-contract", async (req, res) => {
     } else if (action === "done") {
       contract.finished = true;
       contract.assigned = "Completed";
+      console.log(contract.clientEmail);
       sendMail(contract.clientEmail);
     } else if (action === "markReviewed") {
       contract.reviewed = true;
@@ -554,7 +579,6 @@ app.post("/login-technician", (req, res) => {
 
     try {
       const technicians = JSON.parse(data);
-
       const technician = technicians.find(
         (tech) => tech.name + " " + tech.surname === username && tech.password === password
       );
@@ -565,6 +589,7 @@ app.post("/login-technician", (req, res) => {
         res.status(401).send({ success: false, message: "Invalid username or password." });
       }
     } catch (error) {
+      console.error("Error processing technicians data:", error);
       res.status(500).send("Error processing technicians data.");
     }
   });

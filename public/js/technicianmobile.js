@@ -1,3 +1,5 @@
+let authenticatedUsername = "";
+
 function updateContract(contractId, action) {
   fetch("/update-contract", {
     method: "POST",
@@ -27,26 +29,42 @@ function validateLogin(username, password) {
     },
     body: JSON.stringify({ username, password }),
   })
-    .then((response) => {
-      if (!response.ok) {
-        alert("Incorrect username or password.");
-        throw new Error("Login failed.");
-      }
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
       if (data.success) {
+        authenticatedUsername = username; // Save the username globally
+
+        // Redirect to the technician page with username in the query string
         const baseUrl = `${window.location.origin}/technicianmobile?username=${encodeURIComponent(
-          username
-        )}&password=${encodeURIComponent(password)}`;
-        console.log(baseUrl);
+          authenticatedUsername
+        )}`;
+        console.log("Redirecting to:", baseUrl);
         window.location.href = baseUrl;
+      } else {
+        console.error("Login failed:", data.message);
       }
     })
     .catch((error) => console.error("Error:", error));
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("login-form");
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const usernameEl = document.getElementById("input-name");
+      const passwordEl = document.getElementById("input-password");
+
+      const username = usernameEl.value.trim();
+      const password = passwordEl.value.trim();
+
+      validateLogin(username, password);
+    });
+  }
+
+  // Contract action handlers
   document.querySelectorAll(".accept-btn").forEach((button) => {
     button.addEventListener("click", () => {
       const contractId = button.getAttribute("data-contract-id");
@@ -67,20 +85,5 @@ document.addEventListener("DOMContentLoaded", () => {
       updateContract(contractId, "done");
     });
   });
-
-  // Handle Login Form
-  const loginForm = document.getElementById("login-form");
-  if (loginForm) {
-    loginForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      const usernameEl = document.getElementById("input-name");
-      const passwordEl = document.getElementById("input-password");
-
-      const username = usernameEl.value.trim();
-      const password = passwordEl.value.trim();
-
-      validateLogin(username, password);
-    });
-  }
 });
+

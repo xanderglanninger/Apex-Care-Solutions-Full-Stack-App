@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "name": "Dylan",
+    "surname": "Cheballah",
+    "email": "cheballahdylan@gmail.com",
+    "phone": "0793370613",
+    "speciality": "Repair",
+    "workhours": "10",
+    "location": "Montana",
+    "password": "Pass123"
+  },
+  {
+    "name": "Jan",
+    "surname": "Albert",
+    "email": "janmen777@gmail.com",
+    "phone": "0793370613",
+    "speciality": "Repair",
+    "workhours": "10",
+    "location": "Pretoria North",
+    "password": "Pass123"
+  },
+  {
+    "name": "Xander",
+    "surname": "Glanninger",
+    "email": "glanningerxander@gmail.com",
+    "phone": "0793370613",
+    "speciality": "Repair",
+    "workhours": "10",
+    "location": "Montana",
+    "password": "Pass123"
+  },
+  {
+    "name": "Sean",
+    "surname": "Botha",
+    "email": "bothasean@gmail.com",
+    "phone": "0793370613",
+    "speciality": "Repair",
+    "workhours": "10",
+    "location": "Durban",
+    "password": "Pass123"
+  }
+]
