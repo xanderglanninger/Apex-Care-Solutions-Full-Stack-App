@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 //Global synchronization
 //==========================================================================================
-
+//This section is used to read all the html files from the Presentation Layer
 const tempDashboard = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "dashboard.html"), "utf-8");
 const templogin = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "login.html"), "utf-8");
 const tempAssign = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "assign.html"), "utf-8");
@@ -54,9 +54,10 @@ const redirect = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "red
 
 //==========================================================================================
 
-//===============================================================================================================================
-//Jan Albert
-//Technisian Page
+//================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+//SECTION 1
+//This section contains all our app.get RESTful endpoints
+//Technician Page
 app.get("/technician", (req, res) => {
   try {
     const techPage = fs.readFileSync(path.join(__dirname, "Presentation_Layer", "technician.html"), "utf-8");
@@ -138,13 +139,6 @@ app.get("/reporting", (req, res) => {
   }
 });
 
-app.use(express.json());
-
-//===============================================================================================================================
-
-//===============================================================================================================================
-//Xander
-
 app.get("/dashboard", async (req, res) => {
   try {
     let output = tempDashboard;
@@ -185,189 +179,12 @@ app.get(["/", "/login"], (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    // Log the received username for debugging
-    console.log(`Login attempt with username: ${username}`);
-
-    // Correctly determine if it's an employee
-    const isEmployee = username.toLowerCase().includes("employee");
-
-    // Select the appropriate JSON file based on the type
-    const fileName = isEmployee ? "users.json" : "technicianinfo.json";
-    const filePath = path.join(__dirname, "Data Access Layer", fileName);
-
-    const usersData = await fs.promises.readFile(filePath, "utf-8");
-    const users = JSON.parse(usersData);
-
-    // Match the user based on the type
-    const user = isEmployee
-      ? users.find((u) => u.username === username && u.password === password)
-      : users.find((u) => `${u.name} ${u.surname}` === username && u.password === password);
-
-    // Log the identified user type for debugging
-    console.log(`User type: ${isEmployee ? "Employee" : "Technician"}`);
-
-    if (user) {
-      const redirectUrl = isEmployee ? "/dashboard" : "/technicianmobile";
-      console.log(`Redirecting to: ${redirectUrl}`); // Debugging
-
-      return res.status(200).json({
-        success: true,
-        redirectUrl,
-        isEmployee,
-      });
-    } else {
-      return res.status(401).json({ success: false, message: "Invalid username or password." });
-    }
-  } catch (error) {
-    console.error("Error reading user data:", error);
-    res.status(500).send("Error processing login.");
-  }
-});
-
 app.get("/loadingscreen", (req, res) => {
   try {
     res.send(temploading);
   } catch (error) {
     res.status(500).send("Error retrieving counters.");
   }
-});
-
-app.post("/assign-jobs", async (req, res) => {
-  try {
-    const data = await textGenTextOnlyPrompt(); // Await the promise
-
-    // Write data to JSON file
-    fs.writeFile(path.join(__dirname, "Data Access Layer", "assignedjobs.json"), data, (err) => {
-      if (err) {
-        console.error("Error writing to file:", err);
-        return res.status(500).send("Internal Server Error");
-      }
-
-      // Set Content-Type to text/plain
-      res.set("Content-Type", "text/plain"); // Option 1
-      // or use res.type('text/plain'); // Option 2
-
-      // Send response with a redirect URL
-      res.json({ redirectUrl: "/assign" }); // Respond with the URL to redirect
-    });
-  } catch (error) {
-    console.error("Error generating text:", error);
-    return res.status(500).send("Internal Server Error");
-  }
-});
-
-app.post("/writeToClient", (req, res) => {
-  const filePath = path.join(__dirname, "Data Access Layer", "client.json");
-
-  // Read the client.json file
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      console.error("Error reading file:", err);
-      return res.status(500).json({ success: false, message: "Error reading data file." });
-    }
-
-    let oldClientData = [];
-
-    // Check if the file is empty or has invalid JSON
-    if (data.trim() === "") {
-      console.log("File is empty, initializing with an empty array.");
-    } else {
-      try {
-        oldClientData = JSON.parse(data); // Parse existing data
-      } catch (parseError) {
-        console.error("Error parsing JSON data:", parseError);
-        return res.status(500).json({ success: false, message: "Error parsing data file." });
-      }
-    }
-
-    // Add the new client to the array
-    const { client } = req.body;
-    oldClientData.push(client);
-
-    // Write updated data back to the file
-    fs.writeFile(filePath, JSON.stringify(oldClientData, null, 2), (err) => {
-      if (err) {
-        console.error("Error writing to file:", err);
-        return res.status(500).json({ success: false, message: "Error writing data file." });
-      }
-      res.status(200).json({ success: true, message: "Client data saved successfully." });
-    });
-  });
-});
-
-app.post("/writeToContract", (req, res) => {
-  const filePath = path.join(__dirname, "Data Access Layer", "contracts.json");
-
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      console.error("Error reading file:", err);
-      return res.status(500).json({ success: false, message: "Error reading data file." });
-    }
-
-    let oldContractData = [];
-
-    if (data.trim() === "") {
-      console.log("File is empty, initializing with an empty array.");
-    } else {
-      try {
-        oldContractData = JSON.parse(data);
-      } catch (parseError) {
-        console.error("Error parsing JSON data:", parseError);
-        return res.status(500).json({ success: false, message: "Error parsing data file." });
-      }
-    }
-
-    const { contract } = req.body;
-    contract.contract_id = oldContractData.length + 1;
-    oldContractData.push(contract);
-
-    fs.writeFile(filePath, JSON.stringify(oldContractData, null, 2), (err) => {
-      if (err) {
-        console.error("Error writing to file:", err);
-        return res.status(500).json({ success: false, message: "Error writing data file." });
-      }
-      res.status(200).json({ success: true, message: "Client data saved successfully." });
-    });
-  });
-});
-
-app.post("/writeToTechnician", (req, res) => {
-  const filePath = path.join(__dirname, "Data Access Layer", "technicianinfo.json");
-
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      console.error("Error reading file:", err);
-      return res.status(500).json({ success: false, message: "Error reading data file." });
-    }
-
-    let oldTechnicianData = [];
-
-    if (data.trim() === "") {
-      console.log("File is empty, initializing with an empty array.");
-    } else {
-      try {
-        oldTechnicianData = JSON.parse(data);
-      } catch (parseError) {
-        console.error("Error parsing JSON data:", parseError);
-        return res.status(500).json({ success: false, message: "Error parsing data file." });
-      }
-    }
-
-    const { technician } = req.body;
-    oldTechnicianData.push(technician);
-
-    fs.writeFile(filePath, JSON.stringify(oldTechnicianData, null, 2), (err) => {
-      if (err) {
-        console.error("Error writing to file:", err);
-        return res.status(500).json({ success: false, message: "Error writing data file." });
-      }
-      res.status(200).json({ success: true, message: "Client data saved successfully." });
-    });
-  });
 });
 
 app.get("/getContracts", (req, res) => {
@@ -404,85 +221,6 @@ app.get("/getClients", (req, res) => {
   });
 });
 
-app.post("/writeToReview", (req, res) => {
-  const filePath = path.join(__dirname, "Data Access Layer", "reviews.json");
-
-  fs.readFile(filePath, "utf-8", (err, data) => {
-    if (err) {
-      console.error("Error reading file:", err);
-      return res.status(500).json({ success: false, message: "Error reading data file." });
-    }
-
-    let oldReviewsData = [];
-
-    if (data.trim() === "") {
-      console.log("File is empty, initializing with an empty array.");
-    } else {
-      try {
-        oldReviewsData = JSON.parse(data);
-      } catch (parseError) {
-        console.error("Error parsing JSON data:", parseError);
-        return res.status(500).json({ success: false, message: "Error parsing data file." });
-      }
-    }
-
-    const { review } = req.body;
-    oldReviewsData.push(review);
-
-    fs.writeFile(filePath, JSON.stringify(oldReviewsData, null, 2), (err) => {
-      if (err) {
-        console.error("Error writing to file:", err);
-        return res.status(500).json({ success: false, message: "Error writing data file." });
-      }
-      res.status(200).json({ success: true, message: "Client data saved successfully." });
-    });
-  });
-});
-
-//===============================================================================================================================
-
-const replaceContractTemplate = (temp, contract) => {
-  let result = "";
-
-  result = temp.replace(/{%JOBNUMBER%}/g, contract.contract_id);
-  result = result.replace(/{%CONTRACTNAME%}/g, contract.contractname);
-  result = result.replace(/{%USERLOCATION%}/g, contract.location);
-  result = result.replace(/{%JOBTYPE%}/g, contract.typeofjob);
-  result = result.replace(/{%CONTRACTTYPE%}/g, contract.contracttype);
-  result = result.replace(/{%STARTDATE%}/g, contract.startDate);
-  result = result.replace(/{%TIMEPERIOD%}/g, contract.timePeriod);
-
-  if (contract.contracttype === "Maintenance") {
-    result = result.replace(/{%ONCEOFF%}/g, "maintenance-main-container");
-  } else {
-    result = result.replace(/{%ONCEOFF%}/g, "onceoff-main-container");
-  }
-
-  return result;
-};
-
-const replaceAssignedTemplate = (temp, assigned) => {
-  let result = "";
-
-  result = temp.replace(/{%JOBNUMBER%}/g, assigned.contract_id);
-  result = result.replace(/{%CONTRACTNAME%}/g, assigned.clientName);
-  result = result.replace(/{%TECHNICIANNAME%}/g, assigned.assigned);
-  result = result.replace(/{%USERLOCATION%}/g, assigned.location);
-  result = result.replace(/{%CONTRACTDATE%}/g, assigned.timePeriod);
-
-  return result;
-};
-
-const replaceTechDashboardTemplate = (temp, assigned) => {
-  return temp
-    .replace(/{%CONTRACTNAME%}/g, assigned.contractname || "")
-    .replace(/{%CLIENTNAME%}/g, assigned.clientName || "")
-    .replace(/{%CONTRACTDATE%}/g, assigned.startDate || "")
-    .replace(/{%LOCATION%}/g, assigned.location || "")
-    .replace(/{%CONTRACT_ID%}/g, assigned.contract_id || "");
-};
-
-//================================================================================================================================
 //Mobile Technician Page Setup
 app.get("/technicianmobile", async (req, res) => {
   const { username } = req.query;
@@ -516,6 +254,117 @@ app.get("/technicianmobile", async (req, res) => {
     console.error("Error retrieving contracts:", error);
     res.status(500).send("Error retrieving contracts.");
   }
+});
+//================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+//SECTION 2
+//This section contains all the app.post API endpoints that gets called from the client side with the "Fetch" method
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Correctly determine if it's an employee
+    const isEmployee = username.toLowerCase().includes("employee");
+
+    // Select the appropriate JSON file based on the type
+    const fileName = isEmployee ? "users.json" : "technicianinfo.json";
+    const filePath = path.join(__dirname, "Data Access Layer", fileName);
+
+    const usersData = await fs.promises.readFile(filePath, "utf-8");
+    const users = JSON.parse(usersData);
+
+    // Match the user based on the type
+    const user = isEmployee
+      ? users.find((u) => u.username === username && u.password === password)
+      : users.find((u) => `${u.name} ${u.surname}` === username && u.password === password);
+
+    // Log the identified user type for debugging
+    console.log(`User type: ${isEmployee ? "Employee" : "Technician"}`);
+
+    if (user) {
+      const redirectUrl = isEmployee ? "/dashboard" : "/technicianmobile";
+      console.log(`Redirecting to: ${redirectUrl}`); // Debugging
+
+      return res.status(200).json({
+        success: true,
+        redirectUrl,
+        isEmployee,
+      });
+    } else {
+      return res.status(401).json({ success: false, message: "Invalid username or password." });
+    }
+  } catch (error) {
+    console.error("Error reading user data:", error);
+    res.status(500).send("Error processing login.");
+  }
+});
+
+app.post("/assign-jobs", async (req, res) => {
+  try {
+    const data = await textGenTextOnlyPrompt(); // Await the promise
+
+    // Write data to JSON file
+    fs.writeFile(path.join(__dirname, "Data Access Layer", "assignedjobs.json"), data, (err) => {
+      if (err) {
+        console.error("Error writing to file:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+
+      // Set Content-Type to text/plain
+      res.set("Content-Type", "text/plain"); // Option 1
+      // or use res.type('text/plain'); // Option 2
+
+      // Send response with a redirect URL
+      res.json({ redirectUrl: "/assign" }); // Respond with the URL to redirect
+    });
+  } catch (error) {
+    console.error("Error generating text:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/writeToJSON", (req, res) => {
+  const { newdata, filename, contract } = req.body;
+  // Read the client.json file
+  fs.readFile(path.join(__dirname, "Data Access Layer", `${filename}.json`), "utf-8", (err, data) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return res.status(500).json({ success: false, message: "Error reading data file." });
+    }
+
+    let oldData = [];
+
+    // Check if the file is empty or has invalid JSON
+    if (data.trim() === "") {
+      console.log("File is empty, initializing with an empty array.");
+    } else {
+      try {
+        oldData = JSON.parse(data); // Parse existing data
+      } catch (parseError) {
+        console.error("Error parsing JSON data:", parseError);
+        return res.status(500).json({ success: false, message: "Error parsing data file." });
+      }
+    }
+
+    if (contract) {
+      newdata.contract_id = oldData.length + 1;
+    }
+
+    oldData.push(newdata);
+
+    // Write updated data back to the file
+    fs.writeFile(
+      path.join(__dirname, "Data Access Layer", `${filename}.json`),
+      JSON.stringify(oldData, null, 2),
+      (err) => {
+        if (err) {
+          console.error("Error writing to file:", err);
+          return res.status(500).json({ success: false, message: "Error writing data file." });
+        }
+        res.status(200).json({ success: true, message: "Client data saved successfully." });
+      }
+    );
+  });
 });
 
 app.post("/update-contract", async (req, res) => {
@@ -594,6 +443,54 @@ app.post("/login-technician", (req, res) => {
     }
   });
 });
+
+//================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+//SECTION 3
+//This section contains all the normal custom functions that gets called within the app.js
+
+const replaceContractTemplate = (temp, contract) => {
+  let result = "";
+
+  result = temp.replace(/{%JOBNUMBER%}/g, contract.contract_id);
+  result = result.replace(/{%CONTRACTNAME%}/g, contract.contractname);
+  result = result.replace(/{%USERLOCATION%}/g, contract.location);
+  result = result.replace(/{%JOBTYPE%}/g, contract.typeofjob);
+  result = result.replace(/{%CONTRACTTYPE%}/g, contract.contracttype);
+  result = result.replace(/{%STARTDATE%}/g, contract.startDate);
+  result = result.replace(/{%TIMEPERIOD%}/g, contract.timePeriod);
+
+  if (contract.contracttype === "Maintenance") {
+    result = result.replace(/{%ONCEOFF%}/g, "maintenance-main-container");
+  } else {
+    result = result.replace(/{%ONCEOFF%}/g, "onceoff-main-container");
+  }
+
+  return result;
+};
+
+const replaceAssignedTemplate = (temp, assigned) => {
+  let result = "";
+
+  result = temp.replace(/{%JOBNUMBER%}/g, assigned.contract_id);
+  result = result.replace(/{%CONTRACTNAME%}/g, assigned.clientName);
+  result = result.replace(/{%TECHNICIANNAME%}/g, assigned.assigned);
+  result = result.replace(/{%USERLOCATION%}/g, assigned.location);
+  result = result.replace(/{%CONTRACTDATE%}/g, assigned.timePeriod);
+
+  return result;
+};
+
+const replaceTechDashboardTemplate = (temp, assigned) => {
+  return temp
+    .replace(/{%CONTRACTNAME%}/g, assigned.contractname || "")
+    .replace(/{%CLIENTNAME%}/g, assigned.clientName || "")
+    .replace(/{%CONTRACTDATE%}/g, assigned.startDate || "")
+    .replace(/{%LOCATION%}/g, assigned.location || "")
+    .replace(/{%CONTRACT_ID%}/g, assigned.contract_id || "");
+};
+
+//================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+//SECTION 4
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server running at http://localhost:${port}`);
