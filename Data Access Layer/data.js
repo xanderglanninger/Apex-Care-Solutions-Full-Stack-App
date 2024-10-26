@@ -58,9 +58,9 @@ async function textGenTextOnlyPrompt() {
       "contractname": "<contractname>",
       "location": "<location>",
       "assigned": "<technician_name and technician_surname>",
-      "finished": "false",
-      "accepted": "false",
-      "reviewed": "false"
+      "finished": false,
+      "accepted": false,
+      "reviewed": false
     }
   ]
   Do not return a generic response, and please base the assignments only on the actual data I’ve provided. I want one thing in the response and that is the JSON output, no explanation or characters such as :"json" or backticks or grave accents etc. Only the JSON output`;
@@ -90,9 +90,9 @@ const sendMail = (email) => {
     from: "senproject384@gmail.com",
     to: `${email}`,
     subject: "Apexcare || Thank you!",
-    text: `Thank you for using our services.\n\nPlease use the following link to leave a review or raise a ticket:\n${
-      window.location.origin
-    }/review?email=${encodeURIComponent(email)}`,
+    text: `Thank you for using our services.\n\nPlease use the following link to leave a review or raise a ticket:\nhttp://localhost:5000/review?email=${encodeURIComponent(
+      email
+    )}`,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
