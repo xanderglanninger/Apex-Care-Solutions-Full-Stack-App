@@ -61,7 +61,7 @@ async function textGenTextOnlyPrompt() {
       "startDate": "<startDate>",
       "contractname": "<contractname>",
       "location": "<location>",
-      "assigned": "<assigned_technician>",
+      "assigned": "<technician_name and technician_surname>",
       "finished": "false",
       "accepted": "false",
       "reviewed": "false"
