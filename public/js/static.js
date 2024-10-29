@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const email = new URLSearchParams(window.location.search).get("email");
 
     if (!email) {
-      //console.error("No email provided in the URL.");
+      console.error("No email provided in the URL.");
       //return;
     } else {
       try {
@@ -335,7 +335,6 @@ const loadOldClients = async () => {
   }
 };
 
-//TODO
 const writeToClient = (newdata, filename, contract) => {
   fetch("/writeToJSON", {
     method: "POST",
@@ -347,9 +346,9 @@ const writeToClient = (newdata, filename, contract) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        showToast('<i class="fa-regular fa-circle-check"></i>Successfully Added client');
+        window.location.reload();
       } else {
-        showToast('<i class="fa-solid fa-circle-xmark"></i>Error adding client!!!');
+        console.error("Error updating the file");
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -366,9 +365,9 @@ const writeToContract = (newdata, filename, contract) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        showToast('<i class="fa-regular fa-circle-check"></i>Successfully added contract');
+        window.location.reload();
       } else {
-        showToast('<i class="fa-solid fa-circle-xmark"></i>Error adding contract!!!');
+        console.error("Error updating the file");
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -385,9 +384,9 @@ const writeToTechnician = (newdata, filename, contract) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        showToast('<i class="fa-regular fa-circle-check"></i>Successfully added technician');
+        window.location.reload();
       } else {
-        showToast('<i class="fa-solid fa-circle-xmark"></i>Error adding technician!!!');
+        console.error("Error updating the file");
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -526,22 +525,6 @@ const GoogleAI = () => {
 
 function redirectToPage() {
   window.location.href = `${window.location.origin}/loadingscreen`;
-}
-
-function showToast(msg) {
-  let toastBox = document.getElementById("toastbox");
-  let toast = document.createElement("div");
-  toast.classList.add("toast");
-  toast.innerHTML = msg;
-  toastBox.appendChild(toast);
-
-  if (msg.includes("error")) {
-    toast.classList.add("error");
-  }
-
-  setTimeout(() => {
-    toast.remove();
-  }, 4000);
 }
 
 // Assuming this is part of your fetch call
