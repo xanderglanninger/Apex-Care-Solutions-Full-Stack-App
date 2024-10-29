@@ -135,6 +135,7 @@ body {
   padding: 4vh;
   width: 150vh;
   margin-left: 40vh;
+  width: 79vw;
 }
 
 .main-title-container {
@@ -191,6 +192,10 @@ body {
 }
 
 .unassigned-jobs-main-container h3 {
+  font-size: 1.8vh;
+}
+
+.assigned-jobs-main-container h3 {
   font-size: 1.8vh;
 }
 

@@ -7,6 +7,7 @@
 body {
   display: flex;
   height: 100vh;
+  width: 100vw;
   background-color: #1e1e1e;
   color: #fff;
   font-family: "Poppins", sans-serif;
@@ -136,6 +137,7 @@ body {
 .main-contracts-container {
   padding: 4vh; /* Padding around the forms container */
   margin-left: 40vh;
+  width: 80vw;
 }
 
 .main-title-container {
@@ -198,6 +200,7 @@ body {
   display: flex;
   flex-direction: column; /* Arrange items vertically */
   gap: 1.5rem; /* Space between form elements */
+  row-gap: 4vh;
   width: 40vh;
   margin-top: 4vh;
 }
@@ -265,6 +268,15 @@ body {
   background-color: #2d2d2d; /* Background color for the form */
   border-radius: 5px;
   padding: 2rem; /* Padding inside the form */
+  width: 100%;
+}
+
+.row-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .contract-header-container {
@@ -285,8 +297,8 @@ body {
 /* Contract form styling */
 .contract-main-container form {
   display: flex;
-  flex-wrap: wrap; /* Allow items to wrap to new lines */
-  gap: 1rem; /* Space between form elements */
+  flex-direction: column;
+  gap: 2vh; /* Space between form elements */
   width: 100%;
   margin-top: 4vh;
 }
@@ -385,4 +397,69 @@ button {
   padding: 0.75rem 1.5rem; /* Padding for buttons */
   font-size: 1rem; /* Font size for buttons */
   cursor: pointer; /* Pointer cursor on hover */
+}
+
+#toastbox {
+  position: absolute;
+  top: 7vh;
+  right: 2vh;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px;
+  z-index: 999;
+}
+
+.toast {
+  width: 35vh;
+  height: 10vh;
+  background-color: #2d2d2d;
+  font-weight: 300;
+  margin: 2vh 0;
+  border: #caf451 solid 2px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  position: relative;
+  animation: slide-left 0.1s ease forwards;
+}
+
+.toast i {
+  margin: 0 3vh;
+  font-size: 2vh;
+  color: green;
+}
+
+.toast .error i {
+  color: red;
+}
+
+.toast::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0.3vh;
+  background: #caf451;
+  animation: animate 4s linear forwards;
+  border-bottom: #caf451 solid 1px;
+  border-bottom-left-radius: 50px;
+}
+
+@keyframes animate {
+  100% {
+    width: 0;
+    right: 100px;
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(100px);
+  }
+  to {
+    transform: translateX(0);
+  }
 }

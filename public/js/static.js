@@ -99,27 +99,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const email = new URLSearchParams(window.location.search).get("email");
 
-    if (!email) {
-      console.error("No email provided in the URL.");
-      //return;
-    } else {
-      try {
-        const response = await fetch("/getContracts");
-        const data = await response.json();
+    if (email) {
+      const response = await fetch("/getContracts");
+      const data = await response.json();
 
-        if (data.success) {
-          // Filter contracts by client email and reviewed === false
-          contractsCom = data.contractsCom.filter(
-            (contract) => contract.clientEmail === email && contract.reviewed === false
-          );
+      if (data.success) {
+        // Filter contracts by client email and reviewed === false
+        contractsCom = data.contracts.filter(
+          (contract) => contract.clientEmail === email && contract.reviewed === false
+        );
 
-          console.log("Filtered contracts:", contractsCom);
-          populateContractDropdown(contractsCom);
-        } else {
-          console.error("Failed to load contracts.");
-        }
-      } catch (error) {
-        console.error("Error fetching contracts:", error);
+        console.log("Filtered contracts:", contractsCom);
+        populateContractDropdown(contractsCom);
+      } else {
+        console.error("Failed to load contracts.");
       }
 
       const reviewForm = document.getElementById("reviewForm");
@@ -326,7 +319,6 @@ const loadOldClients = async () => {
 
     if (data.success) {
       OldClients = data.clients;
-      console.log("Old clients loaded:", OldClients);
     } else {
       console.error("Failed to load old clients.");
     }
@@ -346,9 +338,9 @@ const writeToClient = (newdata, filename, contract) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        window.location.reload();
+        showToast('<i class="fa-regular fa-circle-check"></i>Successfully Added client');
       } else {
-        console.error("Error updating the file");
+        showToast('<i class="fa-solid fa-circle-xmark"></i>Error adding client!!!');
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -365,9 +357,9 @@ const writeToContract = (newdata, filename, contract) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        window.location.reload();
+        showToast('<i class="fa-regular fa-circle-check"></i>Successfully added contract');
       } else {
-        console.error("Error updating the file");
+        showToast('<i class="fa-solid fa-circle-xmark"></i>Error adding contract!!!');
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -384,9 +376,9 @@ const writeToTechnician = (newdata, filename, contract) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        window.location.reload();
+        showToast('<i class="fa-regular fa-circle-check"></i>Successfully added technician');
       } else {
-        console.error("Error updating the file");
+        showToast('<i class="fa-solid fa-circle-xmark"></i>Error adding technician!!!');
       }
     })
     .catch((error) => console.error("Error:", error));
@@ -442,6 +434,7 @@ function validateLogin(username, password) {
 const populateContractDropdown = (filteredContracts) => {
   const contractDropdown = document.getElementById("contractId");
   contractDropdown.innerHTML = ""; // Clear previous options
+  console.log(filteredContracts);
 
   // Add the placeholder option
   const placeholderOption = document.createElement("option");
@@ -481,9 +474,9 @@ const writeToReview = async (newdata, contractId, filename, contract) => {
 
     if (data.success) {
       await markContractReviewed(contractId);
-      location.reload();
+      showToast('<i class="fa-regular fa-circle-check"></i><p>Successfully submitted review</p>');
     } else {
-      console.error("Error updating the review:", data.message);
+      showToast('<i class="fa-solid fa-circle-xmark"></i>Error submitting review!!!');
     }
   } catch (error) {
     console.error("Error:", error);
@@ -525,6 +518,22 @@ const GoogleAI = () => {
 
 function redirectToPage() {
   window.location.href = `${window.location.origin}/loadingscreen`;
+}
+
+function showToast(msg) {
+  let toastBox = document.getElementById("toastbox");
+  let toast = document.createElement("div");
+  toast.classList.add("toast");
+  toast.innerHTML = msg;
+  toastBox.appendChild(toast);
+
+  if (msg.includes("error")) {
+    toast.classList.add("error");
+  }
+
+  setTimeout(() => {
+    toast.remove();
+  }, 4000);
 }
 
 // Assuming this is part of your fetch call

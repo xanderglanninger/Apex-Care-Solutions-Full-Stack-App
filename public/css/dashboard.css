@@ -10,6 +10,7 @@ body {
   background-color: #1e1e1e;
   color: #fff;
   font-family: "Poppins", sans-serif;
+  width: 100vw;
 }
 
 /* ==================================================================================================================================*/
@@ -135,6 +136,7 @@ body {
   padding: 4vh;
   width: 150vh;
   margin-left: 40vh;
+  width: 80vw;
 }
 
 .main-heading-container {

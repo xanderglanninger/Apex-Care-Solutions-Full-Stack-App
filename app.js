@@ -98,7 +98,7 @@ app.get("/assign", (req, res) => {
         return res.status(500).send("Error reading data file.");
       }
 
-      let output = [];
+      let output = tempAssign;
 
       const dataObj = JSON.parse(contractsdata);
 
@@ -109,9 +109,9 @@ app.get("/assign", (req, res) => {
 
         const contractsObj = unassignedContracts.map((el) => replaceContractTemplate(tempContractCard, el)).join("");
 
-        output = tempAssign.replace("{%UNASSIGNEDJOBS%}", contractsObj);
+        output = output.replace("{%UNASSIGNEDJOBS%}", contractsObj);
       } else {
-        output = tempAssign.replace("{%UNASSIGNEDJOBS%}", "");
+        output = output.replace("{%UNASSIGNEDJOBS%}", "");
       }
 
       const assignedContracts = dataObj.filter((contract) => contract.assigned !== "none");
