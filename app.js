@@ -162,7 +162,7 @@ app.get("/dashboard", async (req, res) => {
     const contractObj =
       dataObj && dataObj.length ? dataObj.map((el) => replaceAssignedTemplate(tempDashboardCard, el)).join("") : "";
 
-    output = output.replace("{%MAINSTATS%}", contractObj);
+    /*output = output.replace("{%MAINSTATS%}", contractObj);*/
 
     res.send(output);
   } catch (error) {
@@ -418,6 +418,17 @@ app.post("/technicianlogin", (req, res) => {
   }
 });
 
+app.post("/contracts.json", (req, res) => {
+  const { filename } = req.body;
+  fs.readFile(path.join(__dirname, "Data Access Layer", `${filename}.json`), "utf-8", (err, data) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return res.status(500).json({ error: "Failed to load contracts data" });
+    }
+    res.status(200).json(JSON.parse(data));
+  });
+});
+
 app.post("/login-technician", (req, res) => {
   const { username, password } = req.body;
 
@@ -481,14 +492,14 @@ const replaceAssignedTemplate = (temp, assigned) => {
   return result;
 };
 
-const replaceTechDashboardTemplate = (temp, assigned) => {
+/*const replaceTechDashboardTemplate = (temp, assigned) => {
   return temp
     .replace(/{%CONTRACTNAME%}/g, assigned.contractname || "")
     .replace(/{%CLIENTNAME%}/g, assigned.clientName || "")
     .replace(/{%CONTRACTDATE%}/g, assigned.startDate || "")
     .replace(/{%LOCATION%}/g, assigned.location || "")
     .replace(/{%CONTRACT_ID%}/g, assigned.contract_id || "");
-};
+};*/
 
 //================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
 //SECTION 4

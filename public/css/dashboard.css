@@ -436,6 +436,65 @@ body {
 
 .main-stats-cards-container {
   height: 30vh;
-  overflow-y: scroll;
-  scrollbar-width: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chart-buttons-container {
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.chart-btn {
+  height: 3vh;
+  background-color: transparent;
+
+  font-weight: 100;
+
+  padding-left: 2vh;
+  padding-right: 2vh;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.contractsbtn {
+  border: #caf451 solid 1px;
+  color: #caf451;
+  font-size: 1.5vh;
+}
+
+.technicianbtn {
+  border: #ff8e3f solid 1px;
+  color: #ff8e3f;
+  font-size: 1.5vh;
+}
+
+.clientbtn {
+  border: #80e1ca solid 1px;
+  color: #80e1ca;
+  font-size: 1.5vh;
+}
+
+.contractsbtn:hover {
+  height: 3vh;
+  background-color: #caf451;
+  color: #1e1e1e;
+  transition: 0.5s;
+}
+
+.technicianbtn:hover {
+  height: 3vh;
+  background-color: #ff8e3f;
+  color: #1e1e1e;
+  transition: 0.5s;
+}
+
+.clientbtn:hover {
+  height: 3vh;
+  background-color: #80e1ca;
+  color: #1e1e1e;
+  transition: 0.5s;
 }

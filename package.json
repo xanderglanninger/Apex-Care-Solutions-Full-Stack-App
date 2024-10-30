@@ -12,6 +12,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
     "apex_care_solutions": "file:",
+    "chart.js": "^4.4.6",
     "express": "^4.21.1",
     "node": "^20.18.0",
     "nodemailer": "^6.9.15",

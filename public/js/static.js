@@ -93,6 +93,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   } catch (error) {}
+  //==================================================================================================================================================================================================================================================================================================================================
+  //Dashboard Chart
 
   //==================================================================================================================================================================================================================================================================================================================================
   //Contracts Completion
@@ -558,4 +560,68 @@ const reloadPage = () => {
     .catch((error) => {
       console.error("Error:", error);
     });
+};
+
+let chartInstance = null;
+
+const dashboardchart = (data, typeOfChart, type) => {
+  const ctx = document.getElementById("myChart");
+
+  // Destroy existing chart instance if it exists
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
+  // Aggregate data to count contracts per location
+  const locationCounts = data.reduce((acc, row) => {
+    acc[row.location] = (acc[row.location] || 0) + 1;
+    return acc;
+  }, {});
+
+  let colorBorder = "";
+  let colorBackground = "";
+  if (type === "contract") {
+    colorBorder = "#caf451";
+    colorBackground = "#768e2f";
+  } else if (type === "technician") {
+    colorBorder = "#ff8e3f";
+    colorBackground = "#cd4e14";
+  } else if (type === "client") {
+    colorBorder = "#80e1ca";
+    colorBackground = "#467b6e";
+  }
+
+  // Prepare chart data
+  const labels = Object.keys(locationCounts);
+  const contractCounts = Object.values(locationCounts);
+
+  // Create a new chart instance and assign it to chartInstance
+  chartInstance = new Chart(ctx, {
+    type: typeOfChart,
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Total Contracts",
+          data: contractCounts,
+          borderWidth: 1,
+          borderColor: colorBorder,
+          backgroundColor: colorBackground,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+      layout: {
+        padding: {
+          top: 20,
+          bottom: 20,
+        },
+      },
+    },
+  });
 };

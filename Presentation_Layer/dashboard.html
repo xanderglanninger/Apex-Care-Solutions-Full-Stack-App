@@ -12,6 +12,7 @@
       rel="stylesheet"
     />
     <script src="/js/static.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="sidebar">
@@ -67,7 +68,14 @@
             <h3>Main Stats</h3>
             <h3 id="see-all-header">See all</h3>
           </div>
-          <div class="main-stats-cards-container">{%MAINSTATS%}</div>
+          <div class="main-stats-cards-container">
+            <canvas id="myChart"></canvas>
+            <div class="chart-buttons-container">
+              <button class="chart-btn contractsbtn" onclick="getChart('contracts')">Contract Stats</button>
+              <button class="chart-btn technicianbtn" onclick="getChart('technicianinfo')">Technician Stats</button>
+              <button class="chart-btn clientbtn" onclick="getChart('client')">Client Stats</button>
+            </div>
+          </div>
         </div>
         <div class="complaints-stats-container">
           <div class="complaints-stats-secondary-container">
@@ -78,4 +86,39 @@
       </div>
     </div>
   </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      getChart("contracts");
+    });
+    const getChart = (filename) => {
+      fetch("/contracts.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ filename }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Received contracts data:", data);
+
+          // Pass `data` to `dashboardchart`
+          if (filename === "contracts") {
+            dashboardchart(data, "line", "contract");
+          } else if (filename === "technicianinfo") {
+            dashboardchart(data, "line", "technician");
+          } else if (filename === "client") {
+            dashboardchart(data, "line", "client");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching contracts data:", error);
+        });
+    };
+  </script>
 </html>
