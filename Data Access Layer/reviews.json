@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "contractName": "Server Fix",
+    "clientName": "Xander",
+    "clientSurname": "Glanninger",
+    "rating": "4",
+    "description": "Good",
+    "fileComplaint": false
+  },
+  {
+    "contractName": "Server Repair",
+    "clientName": "Peiter",
+    "clientSurname": "Glanninger",
+    "rating": "1",
+    "description": "sds",
+    "fileComplaint": false
+  },
+  {
+    "contractName": "Wifi Connection",
+    "clientName": "Kimru",
+    "clientSurname": "Croukamp",
+    "rating": "5",
+    "description": "s",
+    "fileComplaint": false
+  },
+  {
+    "contractName": "Playstation Fix",
+    "clientName": "Jason",
+    "clientSurname": "Wright",
+    "rating": "1",
+    "description": "s",
+    "fileComplaint": true
+  },
+  {
+    "contractName": "Playstation Fix",
+    "clientName": "Jan",
+    "clientSurname": "Van Der Westheizen",
+    "rating": "1",
+    "description": "a",
+    "fileComplaint": true
+  },
+  {
+    "contractName": "Playstation Fix",
+    "clientName": "Philip",
+    "clientSurname": "Kok",
+    "rating": "5",
+    "description": "s",
+    "fileComplaint": false
+  }
+]

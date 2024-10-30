@@ -562,6 +562,42 @@ const reloadPage = () => {
     });
 };
 
+const reviewchart = (data) => {
+  const ctx = document.getElementById("myChart1");
+
+  // Count complaints and non-complaints
+  const complaintCounts = data.reduce(
+    (acc, row) => {
+      if (row.fileComplaint) {
+        acc.complaints += 1;
+      } else {
+        acc.nonComplaints += 1;
+      }
+      return acc;
+    },
+    { complaints: 0, nonComplaints: 0 }
+  );
+
+  // Data for the chart
+  const chartData = [complaintCounts.nonComplaints, complaintCounts.complaints];
+
+  new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: ["Non-Complaints", "Complaints"],
+      datasets: [
+        {
+          label: "Reviews",
+          data: chartData,
+          backgroundColor: ["#caf451", "#768e2f"],
+          borderColor: "#2d2d2d",
+          hoverOffset: 4,
+        },
+      ],
+    },
+  });
+};
+
 let chartInstance = null;
 
 const dashboardchart = (data, typeOfChart, type) => {
@@ -622,6 +658,7 @@ const dashboardchart = (data, typeOfChart, type) => {
           bottom: 20,
         },
       },
+      maintainAspectRatio: false,
     },
   });
 };

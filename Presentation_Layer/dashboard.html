@@ -69,7 +69,10 @@
             <h3 id="see-all-header">See all</h3>
           </div>
           <div class="main-stats-cards-container">
-            <canvas id="myChart"></canvas>
+            <div class="chart-main-container">
+              <canvas id="myChart"></canvas>
+            </div>
+
             <div class="chart-buttons-container">
               <button class="chart-btn contractsbtn" onclick="getChart('contracts')">Contract Stats</button>
               <button class="chart-btn technicianbtn" onclick="getChart('technicianinfo')">Technician Stats</button>
@@ -78,10 +81,7 @@
           </div>
         </div>
         <div class="complaints-stats-container">
-          <div class="complaints-stats-secondary-container">
-            <h1>{%COMPLAINTS%}</h1>
-            <h3>Complaints</h3>
-          </div>
+          <canvas id="myChart1"></canvas>
         </div>
       </div>
     </div>
@@ -89,6 +89,7 @@
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       getChart("contracts");
+      getReviewChart("reviews");
     });
     const getChart = (filename) => {
       fetch("/contracts.json", {
@@ -115,6 +116,29 @@
           } else if (filename === "client") {
             dashboardchart(data, "line", "client");
           }
+        })
+        .catch((error) => {
+          console.error("Error fetching contracts data:", error);
+        });
+    };
+
+    const getReviewChart = (filename) => {
+      fetch("/contracts.json", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ filename }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Received contracts data:", data);
+          reviewchart(data);
         })
         .catch((error) => {
           console.error("Error fetching contracts data:", error);

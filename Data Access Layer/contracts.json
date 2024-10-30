@@ -11,10 +11,10 @@
     "startDate": "2024-10-31",
     "contractname": "Server Fix",
     "location": "Montana",
-    "assigned": "none",
+    "assigned": "Dylan Cheballah",
     "finished": false,
     "accepted": false,
-    "reviewed": false
+    "reviewed": true
   },
   {
     "contract_id": 2,
@@ -28,10 +28,10 @@
     "startDate": "2024-10-29",
     "contractname": "Server Repair",
     "location": "East Lynne",
-    "assigned": "none",
+    "assigned": "Jan Albert",
     "finished": false,
     "accepted": false,
-    "reviewed": false
+    "reviewed": true
   },
   {
     "contract_id": 3,
@@ -45,10 +45,10 @@
     "startDate": "2024-10-30",
     "contractname": "Wifi Connection",
     "location": "Durban",
-    "assigned": "none",
+    "assigned": "Sean Botha",
     "finished": false,
     "accepted": false,
-    "reviewed": false
+    "reviewed": true
   },
   {
     "contract_id": 4,
@@ -62,10 +62,10 @@
     "startDate": "2024-10-28",
     "contractname": "Playstation Fix",
     "location": "Montana",
-    "assigned": "none",
-    "finished": false,
-    "accepted": false,
-    "reviewed": false
+    "assigned": "Completed",
+    "finished": true,
+    "accepted": true,
+    "reviewed": true
   },
   {
     "contract_id": 5,
@@ -79,10 +79,10 @@
     "startDate": "2024-10-20",
     "contractname": "Playstation Fix",
     "location": "Durban",
-    "assigned": "none",
+    "assigned": "Sean Botha",
     "finished": false,
     "accepted": false,
-    "reviewed": false
+    "reviewed": true
   },
   {
     "contract_id": 6,
@@ -96,10 +96,10 @@
     "startDate": "2024-10-22",
     "contractname": "Playstation Fix",
     "location": "Durban",
-    "assigned": "none",
+    "assigned": "Sean Botha",
     "finished": false,
     "accepted": false,
-    "reviewed": false
+    "reviewed": true
   },
   {
     "contract_id": 7,
@@ -113,7 +113,7 @@
     "startDate": "2024-10-23",
     "contractname": "Playstation Fix",
     "location": "Montana",
-    "assigned": "none",
+    "assigned": "Dylan Cheballah",
     "finished": false,
     "accepted": false,
     "reviewed": false
@@ -130,7 +130,7 @@
     "startDate": "2024-10-23",
     "contractname": "Playstation Fix",
     "location": "Pretoria North",
-    "assigned": "none",
+    "assigned": "Jan Albert",
     "finished": false,
     "accepted": false,
     "reviewed": false
